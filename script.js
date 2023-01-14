@@ -6,7 +6,11 @@ let firstPlayerHealthBar = document.querySelector('.elements__health-bar_type_fi
 let secondPlayerHealthBar = document.querySelector('.elements__health-bar_type_second-player');
 let result = document.querySelector('.results__text');
 let resetBtn = document.querySelector('.results__reset');
-
+let attackBtnPlayerOne = document.querySelector('.elements__attack-button_type_first-player');
+let repairBtnPlayerOne = document.querySelector('.elements__repair-button_type_first-player');
+let attackBtnPlayerSecond = document.querySelector('.elements__attack-button_type_second-player');
+let repairBtnPlayerSecond = document.querySelector('.elements__repair-button_type_second-player');
+let log = document.querySelector('.results__log');
 
 // function for updating the DOM with the names and current states of health of the players
 const updateGame = (player1, player2, gameState) => {
@@ -35,21 +39,23 @@ class Player {
         //random amount of damage 
         let damageAmount = Math.floor(Math.random() * 10);
         //count the damage that we need to substract from the health
-        enemy.health -= damageAmount;
+        if (game.isOver === false) {
+        enemy.health -= damageAmount;}
         //update the game after this move
         updateGame(player1, player2, game.isOver);
         //return the message with damage
-        return `${player.name} attacks ${enemy.name} for ${damageAmount} damage`;
+        log.textContent = `${player.name} attacks ${enemy.name} for ${damageAmount} damage`;
     }
 
     repair (player) {
         let healAmount = Math.floor(Math.random() * 5);
         //the reaction of the health bar 
-        player.health += healAmount;
+        if (player.health <= 95) {
+        player.health += healAmount;}
         //update the game
         updateGame(player1, player2, game.isOver);
         //return the message with hp
-        return `${player.name} repaired for ${healAmount} hitpoints`
+        log.textContent = `${player.name} repaired for ${healAmount} hitpoints`;
     }
 
 }
@@ -85,7 +91,6 @@ class Game {
 
 //create game
 let game = new Game();
-let gameState = game.isOver;
 
 //initialize the game by calling updateGame
 updateGame(player1, player2, game.isOver);
@@ -97,7 +102,7 @@ document.addEventListener('keydown', (evt) => {
 })
 
 document.addEventListener('keydown', (evt) => {
-    if (evt.key === 'a' && player2.health > 0 && game.isOver === false) {
+    if (evt.key === 'a' && player1.health > 0 && game.isOver === false) {
         player1.repair(player1);
     }
 })
@@ -109,9 +114,15 @@ document.addEventListener('keydown', (evt) => {
 })
 
 document.addEventListener('keydown', (evt) => {
-    if (evt.key === 's' && player1.health > 0 && game.isOver === false) {
+    if (evt.key === 's' && player2.health > 0 && game.isOver === false) {
         player2.repair(player2);
     }
 })
 
 resetBtn.addEventListener('click', () => {game.reset(player1, player2)});
+attackBtnPlayerOne.addEventListener('click', () => {player1.shoot(player1, player2, player1.attackingDamage)});
+attackBtnPlayerSecond.addEventListener('click', () => {player2.shoot(player2, player1, player2.attackingDamage)});
+repairBtnPlayerOne.addEventListener('click', () => {player1.repair(player1)});
+repairBtnPlayerSecond.addEventListener('click', () => {player2.repair(player2)});
+
+
