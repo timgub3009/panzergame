@@ -50,7 +50,7 @@ class Player {
     repair (player) {
         let healAmount = Math.floor(Math.random() * 5);
         //the reaction of the health bar 
-        if (player.health <= 95) {
+        if (game.isOver === false && player.health <= 95) {
         player.health += healAmount;}
         //update the game
         updateGame(player1, player2, game.isOver);
